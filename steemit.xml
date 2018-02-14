@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.2.0" method="upgrade">
+	<name>steemit</name>
+	<creationDate>January 2018</creationDate>
+	<author>Claes Norin</author>
+	<authorEmail>rupan@joomapro.com</authorEmail>
+	<authorUrl>www.joomlapro.com</authorUrl>
+	<copyright>Copyright Info</copyright>
+	<license>License Info</license>
+	<version>1.0.3</version>
+<description><![CDATA[<html>
+       <table class="table"><tr><td><h3>Steemit succesfully installed.</h3><hr>Please visit <a target="_blank" href="http://www.joomlaproffs.se">www.joomlaproffs.se</a> for support. Steemit is built by <a a target="_blank" href="http://www.joomlaproffs.se">www.joomlaproffs.se</a></h4></td></tr></table>
+     ]]></description> 
+    <install> <!-- Runs on install -->
+        <sql>
+            <file driver="mysqli" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall> <!-- Runs on uninstall -->
+        <sql>
+            <file driver="mysqli" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+	<update> 
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+		<files folder="site">
+		<filename>index.html</filename>
+		<filename>steemit.php</filename>
+		<filename>controller.php</filename>
+		<folder>views</folder>
+		<folder>models</folder>
+		<folder>images</folder>
+	</files>
+	<administration>
+		<menu link='index.php?option=steemit'>Steemit Feeds</menu>
+       <languages folder="admin">
+			<language tag="en-GB">language/en-GB.com_steemit.ini</language>
+			
+		</languages>
+		<files folder="admin">
+			<filename>index.html</filename>
+			<filename>steemit.php</filename>
+			<filename>controller.php</filename>
+			<folder>sql</folder>
+			<folder>views</folder>
+			<folder>models</folder>
+			<folder>images</folder>
+			<folder>assets</folder>
+		</files>
+	</administration>
+	 <updateservers>
+  	   <server type="extension" name="steemit">
+	  		<![CDATA[https://joomlapro.com/index.php?option=com_rdsubs&view=updater&cat=14&type=1&format=xml]]>
+	   </server>
+   	</updateservers>
+</extension>

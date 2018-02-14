@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="Feed Display">
+	</layout>
+	<fields name="params">
+		<fieldset name="params"
+			label="Parameters">
+				<field 
+					name="feed_author"
+					type="text" 
+					label="COM_STEEMIT_FEED_AUTHOR"
+					description="COM_STEEMIT_FEED_AUTHOR_DESCRIPTION"
+					default="" 
+				/>
+				<field 
+					name="feed_tags_include"
+					type="textarea" 
+					default=""
+					label="COM_STEEMIT_FEED_INCLUDE_TAGS"
+					description="COM_STEEMIT_FEED_INCLUDE_TAGS_DESCRIPTION" 
+					rows="5"
+				/>
+				
+				<field 
+					name="feed_tags_exclude"
+					type="textarea" 
+					default=""
+					label="COM_STEEMIT_FEED_EXCLUDE_TAGS"
+					description="COM_STEEMIT_FEED_INCLUDE_TAGS_DESCRIPTION" 
+					rows="5"
+				/>
+				
+				<field 
+					name="feed_posts_exclude"
+					type="textarea" 
+					default=""
+					label="COM_STEEMIT_FEED_EXCLUDE_POSTS"
+					description="COM_STEEMIT_FEED_EXCLUDE_POSTS_DESCRIPTION" 
+					rows="5"
+				/>
+				
+			<field
+				name="feed_show_title"
+				type="radio"
+				label="COM_STEEMIT_SHOW_TITLE"
+				description="COM_STEEMIT_SHOW_TITLE_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field
+				name="feed_show_body"
+				type="radio"
+				label="COM_STEEMIT_SHOW_BODY"
+				description="COM_STEEMIT_SHOW_BODY_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field
+				name="feed_body_limit"
+				type="text"
+				label="COM_STEEMIT_BODY_LIMIT"
+				description="COM_STEEMIT_BODY_LIMIT_DESCRIPTION"
+				default=""
+				/>
+		</fieldset>
+	</fields>
+
+</metadata>
