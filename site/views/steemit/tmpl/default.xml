@@ -38,6 +38,48 @@
 					description="COM_STEEMIT_FEED_EXCLUDE_POSTS_DESCRIPTION" 
 					rows="5"
 				/>
+				
+			<field
+				name="feed_show_title"
+				type="radio"
+				label="COM_STEEMIT_SHOW_TITLE"
+				description="COM_STEEMIT_SHOW_TITLE_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field
+				name="feed_show_body"
+				type="radio"
+				label="COM_STEEMIT_SHOW_BODY"
+				description="COM_STEEMIT_SHOW_BODY_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field
+				name="feed_body_limit"
+				type="text"
+				label="COM_STEEMIT_BODY_LIMIT"
+				description="COM_STEEMIT_BODY_LIMIT_DESCRIPTION"
+				default=""
+				/>
+				<field
+				name="feed_show_image"
+				type="radio"
+				label="COM_STEEMIT_SHOW_IMAGE"
+				description="COM_STEEMIT_SHOW_IMAGE_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 		</fieldset>
 	</fields>
+
 </metadata>

@@ -24,6 +24,7 @@ $app = JFactory::getApplication();
 $menu = $app->getMenu()->getActive();
 $itemId = $menu->id;
 $params = $menu->getParams($itemId);
+
 $document = JFactory::getDocument();
 $document->addStyleSheet(JURI::base(true).'/components/com_steemit/assets/css/style.css');
 if ($params->get('load_fontawesome', 1)) 
@@ -35,7 +36,7 @@ if ($params->get('load_fontawesome', 1))
 $permlink = false;
      if (!$params->get('feed_author', ''))
 		{
-			$html = '<div class="mn_steem_feed_error"><p>'.JText::_('STEEMIT AUTHOR NOT FOUND').'</p></div>';
+			$html = '<div class="mn_steem_feed_error"><p>'.JText::_('Steemit author not found fill the parameters in configuration').'</p></div>';
 			return $html;
 		}
 		$datenow = JFactory::getDate()->toISO8601();
@@ -138,13 +139,17 @@ $permlink = false;
 		    $ajax = false;	
 			$page = false;
 		$referral_code = $params->get('feed_referral', '') ? '?r='.$params->get('feed_referral') : '';
-		$feed_show_images = true;
+		//$feed_show_images = true;
+		$feed_show_images = $params->get('feed_show_image', true);
 		$feed_image_size = '0x0';
-		$feed_fallback_image = '';	
-		$detailBoxTitle = true;
+		//$feed_fallback_image = '';	
+		//$detailBoxTitle = true;
+		$feed_show_title = $params->get('feed_show_title', true);
 		$feed_title_limit = 20;
-		$detailBoxIntrotext = true;
-		$feed_introtext_limit = 40;
+		//$detailBoxIntrotext = true;
+		$feed_show_body = $params->get('feed_show_body', true);
+		//$feed_introtext_limit = 40;
+		$feed_body_limit=$params->get('feed_body_limit', 40);
 		$detailBoxDate = true;
 		$detailBoxCategory = true;
 		$detailBoxTags = true;
@@ -201,7 +206,7 @@ $permlink = false;
 		$item->author_reputation = $out;
 		//Formatted the $item->body data 
 	     $text = $item->body;
-	     $num_words=50;
+	     $num_words=$feed_body_limit;
 	     $more=null;
 	     if ( null === $more ) 
 		{
@@ -295,6 +300,20 @@ $permlink = false;
 			text-align: left;
 			
 		}
+		.item_body
+			{
+				width:75%;
+				float:left;
+				text-align: left;
+				padding-left: 10px;
+			}
+			.item_title
+			{
+				width:75%;
+				float:left;
+				text-align: left;
+				padding-left: 10px;
+			}
 	@media only screen and (max-width : 620px)
 	 {
  			
@@ -339,7 +358,29 @@ $permlink = false;
 				width:100%;
 				height: 100%;
 			}
-		
+			.li
+			{
+				overflow: hidden;
+			}
+			.image img
+			{
+				width: 100%;
+				max-width: 100%;
+			}
+			.item_body
+			{
+				width:100%;
+				float:inherit;
+				text-align: inherit;
+				padding-left: 10px;
+			}
+		.item_title
+			{
+				width:100%;
+				float:left;
+				text-align: left;
+				padding-left: 10px;
+			}
 			
 		}
 	</style>
@@ -357,52 +398,90 @@ $url_author = 'https://steemit.com/@'.$item->author;
 ?>
 
     <div style="text-align: right;"> <!-- First div Start -->
-		<div class="date_author">
-			    <span class="author_name"><?php echo $item->author;?><?php echo '('.$item->author_reputation.')';?></span>
-			    <span class="author_category"><?php echo 'in '.$item->category.' .';?></span>
-			    <span class="time_post"><?php echo $item->formatted_date; ?></span>	
-		</div>
-		<div class="data_div">
-			<div class="leftdiv">
-			 
-			  <a target="_blank" href="<?php echo $url; ?>">
-					<img src="<?php echo $item->image;?>" class="img"/>
-				</a>
-			</div>
-			<div class="rightdiv"><!--   Right div start-->
-			  	 <div style="padding:10px" >
+		
+		<div class="data_div"><!-- Data div Start -->
+
+			<article class="li">
+				<?php // Image
+				if ($feed_show_images && isset($item->image) && $item->image)
+				{ ?>
+				<div class="leftdiv">
+				 	<a target="_blank" href="<?php echo $url; ?>">
+						<img src="<?php echo $item->image;?>" class="img"/>
+					</a>
+
+				</div>
+			<?php
+				}
+			?>
+			
+				<div><!-- content div Start -->
+					<?php // Image
+					if ($feed_show_images && isset($item->image) && $item->image)
+					{ ?>
+					<div class="date_author"><!-- DATE_AUTHOR div Start -->
+			    		<span class="author_name"><?php echo $item->author;?><?php echo '('.$item->author_reputation.')';?></span>
+			    		<span class="author_category"><?php echo 'in '.$item->category.' .';?></span>
+			    		<span class="time_post"><?php echo $item->formatted_date; ?></span>	
+					</div><!-- DATE_AUTHOR div end -->
+					<?php
+					}
+					?>
+					<div class="item_title">
 			  		<h3>
-			  			<?php 			  							
+			  			<?php 
+			  			if($feed_show_title)
+			  			{			  							
 			  			echo '<a target="_blank" href="'.$url.'">'.$item->title.'</a>';
+			  			}
 			  			?>
 			  		</h3>
-
+					
 			  		<?php
+			  		if($feed_show_body)
+			  		{
 			  		 $text = strip_tags( $item->short_body);
+			  		
 					$words_array = preg_split( "/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY );
 					// strip urls
 					$str = preg_replace('/\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|$!:,.;]*[A-Z0-9+&@#\/%=~_|$]/i', '', $text); 
 					$str = preg_replace('/[!]*[-A-Z0-9+&@#\/%?=~_|$!:,.;]*[.jpg()]/i', ' ', $str);
+					$str = preg_replace('/-/',"", $str);
 					$str = str_replace("![ ]","",$str );
 					$str = rtrim($str,"; ");
+					$str = ltrim($str,"[]");
+					$str = trim($str,"]");
 			  		?>
-			  		<div class="item_body"><?php echo $str; ?></div>
-			  		<?php
-			  		echo '<a target="_blank" href="'.$url.'">Read More &raquo;</a>';
-			  		?>
-			  		 
-			  	</div>
-			</div><!-- Right div end -->
+			  		<?php echo $str; ?>
+			  		<div>
+			  			<?php
+			  				echo '<a target="_blank" href="'.$url.'">Read More &raquo;</a>';
+			  			}
+			  			?>
+			  		</div>
+			  		</div>
+
+			  		
+			  		<?php // Image
+						if ($feed_show_images && isset($item->image) && $item->image)
+					{
+					 ?>
+			  		 	<div class="currency"><!-- currency div Start -->
+							<a target="_blank" href="<?php echo $url_author; ?>">
+								<?php echo '$'.$item->total_reward.' |';?>
+							</a>
+							<i class="fa fa-chevron-up"></i>
+								<?php echo $item->votes.' |';?>
+							<i class="fa fa-comments"></i>
+								<?php echo $item->replies_count;?>
+						</div><!-- currency div end -->
+						<?php
+						}
+						?>
+			  	</div><!-- content div end -->
+			</article>
 		</div><!-- Data div end -->
-		<div class="currency">
-			<a target="_blank" href="<?php echo $url_author; ?>">
-			<?php echo '$'.$item->total_reward.' |';?>
-			</a>
-				<i class="fa fa-chevron-up"></i>
-			<?php echo $item->votes.' |';?>
-			<i class="fa fa-comments"></i>
-			<?php echo $item->replies_count;?>
-		</div>
+		
      </div><!-- First div end -->
      <hr />
 		        
