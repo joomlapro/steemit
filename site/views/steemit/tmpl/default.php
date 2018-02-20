@@ -1,6 +1,8 @@
 
  <?php
+
 defined('_JEXEC') or die('Restricted access');
+JHtml::_('behavior.tooltip');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,13 +26,14 @@ $app = JFactory::getApplication();
 $menu = $app->getMenu()->getActive();
 $itemId = $menu->id;
 $params = $menu->getParams($itemId);
-
 $document = JFactory::getDocument();
 $document->addStyleSheet(JURI::base(true).'/components/com_steemit/assets/css/style.css');
 if ($params->get('load_fontawesome', 1)) 
 {
 	$document->addStyleSheet('https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
 }
+
+
 ?>
 <?php
 $permlink = false;
@@ -44,7 +47,9 @@ $permlink = false;
 		$mn_sf_author = trim($params->get('feed_author', ''));
 		$mn_sf_datenow = $datenow;
 		$last_post_permlink = '';
-		$posts_per_page = 4;
+		$posts_per_page = $params->get('feed_initial_post',5);
+		$feed_post_per_page = (int)$params->get('feed_items_per_page', 5);
+		$feed_additional_pages = (int)$params->get('feed_additional_pages', 10);
 		$included_tags = array();
 		if ($params->get('feed_tags_include', '') && $params->get('feed_tags_include', ''))
 		{
@@ -139,25 +144,43 @@ $permlink = false;
 		    $ajax = false;	
 			$page = false;
 		$referral_code = $params->get('feed_referral', '') ? '?r='.$params->get('feed_referral') : '';
-		//$feed_show_images = true;
 		$feed_show_images = $params->get('feed_show_image', true);
 		$feed_image_size = '0x0';
-		//$feed_fallback_image = '';	
-		//$detailBoxTitle = true;
 		$feed_show_title = $params->get('feed_show_title', true);
 		$feed_title_limit = 20;
-		//$detailBoxIntrotext = true;
 		$feed_show_body = $params->get('feed_show_body', true);
-		//$feed_introtext_limit = 40;
 		$feed_body_limit=$params->get('feed_body_limit', 40);
-		$detailBoxDate = true;
-		$detailBoxCategory = true;
-		$detailBoxTags = true;
-		$detailBoxAuthor = true;
-		$detailBoxAuthorRep = true;
-		$detailBoxReward = true;
-		$detailBoxVotes = true;
-		$detailBoxComments = true;
+		$title_font_size = (int)$params->get('feed_title_font_size', 18);
+		$body_font_size = (int)$params->get('feed_body_font_size', 15);
+		$currency_font_size = (int)$params->get('feed_currency_font_size', 15);
+		$author_font_size = (int)$params->get('feed_author_font_size', 15);
+		$feed_show_author=$params->get('feed_show_author', true);
+		$feed_show_category=$params->get('feed_show_category', true);
+		$feed_show_timepost=$params->get('feed_show_timepost', true);
+		$feed_show_reward=$params->get('feed_show_reward', true);
+		$feed_show_votes=$params->get('feed_show_votes', true);
+		$feed_show_replies=$params->get('feed_show_replies', true);
+		$css = '';
+		$css .= '
+		 .item_title 
+		{
+			font-size: '.$title_font_size.'px;
+		}
+			
+		.item_body 
+		{
+			font-size: '.$body_font_size.'px;
+		}
+		#currency
+		{
+			font-size:'.$currency_font_size.'px;
+		}
+		.date_author 
+		{
+			font-size: '.$author_font_size.'px;
+		}
+		';
+		$document->addStyleDeclaration( $css );
 		$items=array();
 		foreach ($posts as $key => $item) 
 		{
@@ -227,7 +250,6 @@ $permlink = false;
 			$text = implode( $sep, $words_array );
 		}
  		$item->short_body = $text;
-
 		//Formatted the $item->total_reward data 
 			$total_payout_value = round((float)$item->total_payout_value, 2);
 			$curator_payout_value = round((float)$item->curator_payout_value, 2);
@@ -240,8 +262,7 @@ $permlink = false;
 			$item->replies_count = 0;
 			$author=$item->author;
 			$replies = file_get_contents('https://api.steemjs.com/getContentReplies?parent='.$author.'&parentPermlink='.$permlink);
-		
-		$isjson = json_decode($replies);
+			$isjson = json_decode($replies);
 		
 		if ($isjson)
 		{
@@ -256,10 +277,8 @@ $permlink = false;
 			
 			$item->replies_count=$repliesCount;	
 		}
-		
 	
 			$metadata = json_decode($item->json_metadata, false);
-			
 			$item->tags = $metadata->tags;
 			array_shift($item->tags);
 			
@@ -271,17 +290,12 @@ $permlink = false;
 					$item->image = 'https://steemitimages.com/'.$feed_image_size.'/'.$raw_image[0];
 				}
 			}
-			else
-			{
-				if ($feed_fallback_image)
-				{
-					$item->image = $feed_fallback_image;
-				}
-			}
+			
 												
 			$items[] = $item;
 		}
 	}
+
 	
 ?>
 <body>
@@ -314,6 +328,28 @@ $permlink = false;
 				text-align: left;
 				padding-left: 10px;
 			}
+			.img
+			{
+				width:100%;
+				height: 100%;
+			}
+			.li
+			{
+				overflow: hidden;
+			}
+			.image img
+			{
+				width: 100%;
+				max-width: 100%;
+			}
+				#currency
+			{
+				width:100%;
+				float:right;
+				text-align: right;
+
+			}
+						
 	@media only screen and (max-width : 620px)
 	 {
  			
@@ -338,9 +374,11 @@ $permlink = false;
 				
 			}
 			
-			.currency
+			#currency
 			{
-				margin-left: inherit;
+				width:100%;
+				float:right;
+				text-align: right;
 
 			}
 			.gap-right 
@@ -370,8 +408,8 @@ $permlink = false;
 			.item_body
 			{
 				width:100%;
-				float:inherit;
-				text-align: inherit;
+				float:left;
+				text-align: left;
 				padding-left: 10px;
 			}
 		.item_title
@@ -382,21 +420,20 @@ $permlink = false;
 				padding-left: 10px;
 			}
 			
+			
 		}
 	</style>
 
 
 <?php
 
-
  foreach($items as $item)
 	 {
 	
-$url = 'https://steemit.com'.$item->url;
-$url_author = 'https://steemit.com/@'.$item->author;
+		$url = 'https://steemit.com'.$item->url;
+		$url_author = 'https://steemit.com/@'.$item->author;
 	 
 ?>
-
     <div style="text-align: right;"> <!-- First div Start -->
 		
 		<div class="data_div"><!-- Data div Start -->
@@ -414,39 +451,55 @@ $url_author = 'https://steemit.com/@'.$item->author;
 			<?php
 				}
 			?>
-			
-				<div><!-- content div Start -->
-					<?php // Image
-					if ($feed_show_images && isset($item->image) && $item->image)
-					{ ?>
-					<div class="date_author"><!-- DATE_AUTHOR div Start -->
-			    		<span class="author_name"><?php echo $item->author;?><?php echo '('.$item->author_reputation.')';?></span>
-			    		<span class="author_category"><?php echo 'in '.$item->category.' .';?></span>
+				<div class="date_author"><!-- DATE_AUTHOR div Start -->
+			    		<?php 
+						if ($feed_show_author)
+						{ ?>
+			    		<span class="author_name"><?php echo $item->author;?><?php echo '('.$item->author_reputation.')'.'~';?></span>
+			    		<?php
+						}
+						?>
+			    		<?php 
+						if ($feed_show_timepost)
+						{ ?>
 			    		<span class="time_post"><?php echo $item->formatted_date; ?></span>	
+			    		<?php
+						}
+						?>
+						<?php 
+						if (($feed_show_timepost) && ($feed_show_category))
+							{	
+								echo 'in';
+							}
+						if ($feed_show_category)
+						{ ?>
+			    		<span class="author_category"><?php echo $item->category.'';?></span>
+			    		<?php
+						}
+						?>
 					</div><!-- DATE_AUTHOR div end -->
-					<?php
-					}
-					?>
-					<div class="item_title">
-			  		<h3>
+				<div><!-- content div Start -->						
+					
+					<div class="item_title"><!-- item title div start -->
+			  		
 			  			<?php 
 			  			if($feed_show_title)
 			  			{			  							
 			  			echo '<a target="_blank" href="'.$url.'">'.$item->title.'</a>';
 			  			}
 			  			?>
-			  		</h3>
-					
+			  		</div><!-- item title div end -->
+					<div class="item_body col-sm-12"><!-- item body div start -->
 			  		<?php
 			  		if($feed_show_body)
 			  		{
 			  		 $text = strip_tags( $item->short_body);
-			  		
-					$words_array = preg_split( "/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY );
+			  		$words_array = preg_split( "/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY );
 					// strip urls
 					$str = preg_replace('/\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|$!:,.;]*[A-Z0-9+&@#\/%=~_|$]/i', '', $text); 
 					$str = preg_replace('/[!]*[-A-Z0-9+&@#\/%?=~_|$!:,.;]*[.jpg()]/i', ' ', $str);
 					$str = preg_replace('/-/',"", $str);
+					$str = preg_replace('/[###]/',"", $str);
 					$str = str_replace("![ ]","",$str );
 					$str = rtrim($str,"; ");
 					$str = ltrim($str,"[]");
@@ -458,37 +511,77 @@ $url_author = 'https://steemit.com/@'.$item->author;
 			  				echo '<a target="_blank" href="'.$url.'">Read More &raquo;</a>';
 			  			}
 			  			?>
-			  		</div>
-			  		</div>
+			  		</div>			  			  		 	
+						
+			  		</div><!-- item body div end -->
 
-			  		
-			  		<?php // Image
-						if ($feed_show_images && isset($item->image) && $item->image)
-					{
-					 ?>
-			  		 	<div class="currency"><!-- currency div Start -->
+			  		<div id="currency"><!-- currency div Start -->
+							<?php 
+							if ($feed_show_reward)
+							{ 
+							?>
 							<a target="_blank" href="<?php echo $url_author; ?>">
-								<?php echo '$'.$item->total_reward.' |';?>
+								<?php echo '$'.$item->total_reward;?>
 							</a>
-							<i class="fa fa-chevron-up"></i>
-								<?php echo $item->votes.' |';?>
+							<?php
+							}
+							?>
+																		 
+							<?php 
+
+							if (($feed_show_reward) && ($feed_show_votes))
+							{	
+								echo ' |';
+							}
+							if ($feed_show_votes) 
+							{
+							?>
+							<i class="fa fa-chevron-up"></i>	
+							<?php
+								
+								echo $item->votes;
+							?>
+							
+							<?php 
+							} 
+							?>
+							<?php 
+							if (($feed_show_votes) && ($feed_show_replies) )
+							{	
+								echo ' |';
+							}
+							if ($feed_show_replies)
+							{
+							?>	
 							<i class="fa fa-comments"></i>
-								<?php echo $item->replies_count;?>
-						</div><!-- currency div end -->
-						<?php
-						}
-						?>
+							<?php
+								 echo $item->replies_count;
+							 ?>
+							 <?php 
+							} 
+							?>
+						</div><!-- currency div end -->			  				
 			  	</div><!-- content div end -->
 			</article>
-		</div><!-- Data div end -->
-		
+		</div><!-- Data div end -->		
      </div><!-- First div end -->
-     <hr />
-		        
+     <hr />		        
 		<?php
 	 }
+	 	
 	 ?>
-	
+	<!--
+	 <div>//Pagination Part
+
+	<?php
+		//jimport('joomla.html.pagination');
+		//$pagination = new JPagination(14, 5, 5); 
+		//echo $pagination->getListFooter(); 
+	?>
+
+	</div>-->
+
+	     	
 	</body>
 	</html>
 	

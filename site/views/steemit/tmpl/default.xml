@@ -39,7 +39,10 @@
 					rows="5"
 				/>
 				
-			<field
+			
+		</fieldset>
+		<fieldset name="post" label="Post Settings">
+		<field
 				name="feed_show_title"
 				type="radio"
 				label="COM_STEEMIT_SHOW_TITLE"
@@ -80,6 +83,110 @@
 				<option value="0">JNO</option>
 			</field>
 		</fieldset>
-	</fields>
+		<fieldset name="detail" label="Pagination and Layout">
+			<field
+				name="feed_initial_post"
+				type="text"
+				label="COM_STEEMIT_INITIAL_POST"
+				description="COM_STEEMIT_INITIAL_POST_DESCRIPTION"
+				default=""
+				/>
+				<field
+				name="feed_title_font_size"
+				type="text"
+				label="COM_STEEMIT_TITLE_SIZE"
+				description="COM_STEEMIT_TITLE_SIZE_DESCRIPTION"
+				default=""
+				/>
+				<field
+				name="feed_body_font_size"
+				type="text"
+				label="COM_STEEMIT_BODY_SIZE"
+				description="COM_STEEMIT_BODY_SIZE_DESCRIPTION"
+				default=""
+				/>
+				<field
+				name="feed_author_font_size"
+				type="text"
+				label="COM_STEEMIT_AUTHOR_SIZE"
+				description="COM_STEEMIT_AUTHOR_SIZE_DESCRIPTION"
+				default=""
+				/>
+				<field
+				name="feed_currency_font_size"
+				type="text"
+				label="COM_STEEMIT_CURRENCY_SIZE"
+				description="COM_STEEMIT_CURRENCY_SIZE_DESCRIPTION"
+				default=""
+				/>
+				<field
+					name="feed_show_author"
+					type="radio"
+					label="COM_STEEMIT_SHOW_AUTHOR"
+					description="COM_STEEMIT_SHOW_AUTHOR_DESCRIPTION"
+					class="btn-group btn-group-yesno"
+					default="1"
+					>
+					<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field>
+				<field
+				name="feed_show_category"
+				type="radio"
+				label="COM_STEEMIT_SHOW_CATEGORY"
+				description="COM_STEEMIT_SHOW_CATEGORY_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field>
+				<field
+				name="feed_show_timepost"
+				type="radio"
+				label="COM_STEEMIT_SHOW_TIMEPOST"
+				description="COM_STEEMIT_SHOW_TIMEPOST_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field>
+				<field
+				name="feed_show_reward"
+				type="radio"
+				label="COM_STEEMIT_SHOW_REWARD"
+				description="COM_STEEMIT_SHOW_REWARD_DESCRIPTION"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field>
+				<field
+				name="feed_show_votes"
+				type="radio"
+				label="COM_STEEMIT_SHOW_VOTES"
+				description="COM_STEEMIT_SHOW_REWARD_VOTES"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field>
+				<field
+				name="feed_show_replies"
+				type="radio"
+				label="COM_STEEMIT_SHOW_REPLIES"
+				description="COM_STEEMIT_SHOW_REPLIES_VOTES"
+				class="btn-group btn-group-yesno"
+				default="1"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field>
 
+			</fieldset>
+	</fields>
+	
 </metadata>
